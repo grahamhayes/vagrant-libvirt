@@ -17,12 +17,11 @@ module VagrantPlugins
             machine.communicate.sudo("mkdir -p #{expanded_guest_path}")
 
             # Mount
-            mount_tag = Digest::MD5.new.update(name).to_s[0,31]
+            mount_tag = Digest::MD5.new.update(opts[:hostpath]).to_s[0,31]
 
             mount_opts="-o trans=virtio"
             mount_opts += ",access=#{opts[:owner]}" if opts[:owner]
             mount_opts += ",version=#{opts[:version]}" if opts[:version]
-            mount_opts += ",#{opts[:mount_opts]}" if opts[:mount_opts]
 
             mount_command = "mount -t 9p #{mount_opts} '#{mount_tag}' #{expanded_guest_path}"
             retryable(:on => Vagrant::Errors::LinuxMountFailed,
